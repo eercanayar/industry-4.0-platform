@@ -6,4 +6,5 @@ The files and resources about my senior design project named "Application-Indepe
 - **APPENDIX A:** Connecting a new industrial system or a device to the platform
 - **APPENDIX B:** OPC-MQTT gateway software source code
 - **APPENDIX C:** Node-RED flow program to control industrial system outputs
-- **APPENDIX D:** Source code of Siddhi stream processor application
+- **APPENDIX D:** Node-RED flow program pushing industrial data to UI, to stream processor and producing heatmaps
+- **APPENDIX E:** Source code of Siddhi stream processor application

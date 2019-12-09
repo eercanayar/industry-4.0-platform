@@ -1,0 +1,42 @@
+@App:name("IndustrialStreamDemo")
+@App:description("Realtime data analytics of an industrial system")
+
+@source(type='mqtt', url= 'tcp://mqtt.eercan.com:1883', username="**", password="**", quality.of.service="0", clean.session="true", topic='opcgtw/siddhi/in', @map(type='json', @attributes(
+    opcgtwgeti40_2018sensor3ICh3Data = '$.opcgtwgeti40_2018sensor3ICh3Data',
+    opcgtwgeti40_2018sensor3ICh2Data = '$.opcgtwgeti40_2018sensor3ICh2Data',
+    opcgtwgeti40_2018sensor3ICh1Data = '$.opcgtwgeti40_2018sensor3ICh1Data',
+    opcgtwgeti40_2018sensor3ICh0Data = '$.opcgtwgeti40_2018sensor3ICh0Data',
+    opcgtwgeti40_2018sensor2ICh3Data = '$.opcgtwgeti40_2018sensor2ICh3Data',
+    opcgtwgeti40_2018sensor2ICh2Data = '$.opcgtwgeti40_2018sensor2ICh2Data',
+    opcgtwgeti40_2018sensor2ICh1Data = '$.opcgtwgeti40_2018sensor2ICh1Data',
+    opcgtwgeti40_2018sensor2ICh0Data = '$.opcgtwgeti40_2018sensor2ICh0Data',
+    timestamp='$.timestamp'
+    )))
+define stream SensorDataInput (
+opcgtwgeti40_2018sensor3ICh3Data double,
+opcgtwgeti40_2018sensor3ICh2Data double,
+opcgtwgeti40_2018sensor3ICh1Data double,
+opcgtwgeti40_2018sensor3ICh0Data double,
+opcgtwgeti40_2018sensor2ICh3Data double,
+opcgtwgeti40_2018sensor2ICh2Data double,
+opcgtwgeti40_2018sensor2ICh1Data double,
+opcgtwgeti40_2018sensor2ICh0Data double, timestamp double);
+
+@sink(type='mqtt', url= 'tcp://mqtt.eercan.com:1883', username="**", password="**", quality.of.service="0", clean.session="true", topic='opcgtw/siddhi/out', @map(type='json'))
+define stream NooneStream(state string, timestamp double);
+
+@sink(type='mqtt', url= 'tcp://mqtt.eercan.com:1883', username="**", password="**", quality.of.service="0", clean.session="true", topic='opcgtw/siddhi/out', @map(type='json'))
+define stream PeakStream(state string, timestamp double);
+
+from every e1=SensorDataInput[opcgtwgeti40_2018sensor3ICh3Data>8000],
+e2=SensorDataInput[opcgtwgeti40_2018sensor3ICh3Data<8000] within 20 sec
+select 'peak' as state, e1.timestamp as timestamp
+insert into PeakStream;
+
+from every e1=SensorDataInput[opcgtwgeti40_2018sensor3ICh3Data>8000] -> not SensorDataInput[
+opcgtwgeti40_2018sensor3ICh3Data>8000
+or opcgtwgeti40_2018sensor3ICh2Data>1023] for 120 sec
+select 'bye' as state, e1.timestamp as timestamp
+insert into NooneStream;
+
+

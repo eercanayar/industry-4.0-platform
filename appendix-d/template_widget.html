@@ -1,0 +1,70 @@
+<div class="row">
+  <div class="column" id="opcgtwgeti40_2018sensor3ICh3Data">
+    <h2>&nbsp;</h2>
+    <p id="opcgtwgeti40_2018sensor3ICh3Data_val">&nbsp;</p>
+  </div>
+  <div class="column" id="opcgtwgeti40_2018sensor2ICh0Data">
+    <h2>&nbsp;</h2>
+    <p id="opcgtwgeti40_2018sensor2ICh0Data_val">&nbsp;</p>
+  </div>
+</div>
+<div class="row">
+  <div class="column" id="opcgtwgeti40_2018sensor3ICh2Data">
+    <h2>&nbsp;</h2>
+    <p id="opcgtwgeti40_2018sensor3ICh2Data_val">&nbsp;</p>
+  </div>
+  <div class="column" id="opcgtwgeti40_2018sensor2ICh1Data">
+    <h2>&nbsp;</h2>
+    <p id="opcgtwgeti40_2018sensor2ICh1Data_val">&nbsp;</p>
+  </div>
+</div>
+<div class="row">
+  <div class="column" id="opcgtwgeti40_2018sensor3ICh1Data">
+    <h2>&nbsp;</h2>
+    <p id="opcgtwgeti40_2018sensor3ICh1Data_val">&nbsp;</p>
+  </div>
+  <div class="column" id="opcgtwgeti40_2018sensor2ICh2Data">
+    <h2>&nbsp;</h2>
+    <p id="opcgtwgeti40_2018sensor2ICh2Data_val">&nbsp;</p>
+  </div>
+</div>
+<div class="row">
+  <div class="column" id="opcgtwgeti40_2018sensor3ICh0Data">
+    <h2>&nbsp;</h2>
+    <p id="opcgtwgeti40_2018sensor3ICh0Data_val">&nbsp;</p>
+  </div>
+  <div class="column" id="opcgtwgeti40_2018sensor2ICh3Data">
+    <h2>&nbsp;</h2>
+    <p id="opcgtwgeti40_2018sensor2ICh3Data_val">&nbsp;</p>
+  </div>
+</div>
+
+<script>
+(function() {
+    function testit(msg,scope) {
+        for(var key in msg.payload) {
+            var val = msg.payload[key]/8192 * 100;
+            if(val>100) { val=100; }
+            var h= Math.floor((100 - val) * 120 / 100);
+            var s = Math.abs(val - 50)/50;
+            var v = 1;
+            var currentColor = hsv2rgb(h, s, 1);
+            console.log(currentColor);
+            $("#"+key).css({"background-color":hsv2rgb(h, s, 1)});
+            $("#"+key+"_val").html(msg.payload[key]);
+
+        }
+        //console.log("In testit " + msg.payload + "  count = " + count);
+        //scope.send({payload: "from testit " + msg.payload + "  count = " + count});
+    }
+
+    (function(scope) {
+        //scope.send({payload: "preload"});   // this gets sent when the view is opened in the browser
+        scope.$watch('msg', function(msg) {
+            if (msg) {
+                testit(msg, scope);
+            }
+        });
+    })(scope);
+})();
+</script> 
